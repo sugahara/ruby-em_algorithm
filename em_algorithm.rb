@@ -223,7 +223,8 @@ if(DEBUG==1)
 end
 
 
-STEP.times do
+STEP.times|i| do
+  puts "#{i}step(s)"
   @log_likelihood_history.push(log_likelihood())
   puts "log_likelihood: #{@log_likelihood_history.last}"
   p @gamma
