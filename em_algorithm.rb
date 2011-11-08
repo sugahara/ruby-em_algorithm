@@ -2,9 +2,9 @@
 include Math
 
 DEBUG = 0
-STEP = 1000
+STEP = 10000
 SOURCE = 1  ## 0=>GMM GEN, 1=>FILE
-MODE = 0 ## 0=>VALUE, 1=>DIFFERENTIAL
+MODE = 1 ## 0=>VALUE, 1=>DIFFERENTIAL
 
 def sum_array(array)
   sum = 0
@@ -142,7 +142,7 @@ elsif(SOURCE == 1) ## FILE
   elsif(MODE == 1) ## DIFFERENTIAL
     @gamma = [0.2,0.2,0.2,0.1,0.1,0.1,0.1]
     @mu = [-30,30,-10,10,0,-100,100]
-    @sigma2 = [50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0]
+    @sigma2 = [500.0, 500.0, 500.0, 500.0, 500.0, 500.0, 500.0]
   end
   K = @mu.size
 end
@@ -177,7 +177,17 @@ elsif(SOURCE == 1) ## FROM FILE
         end 
       end
     elsif(MODE == 1) ## DIFFERENTIAL
-      
+      prev = nil
+      f.each do |line|
+        if !line.index("/")
+          if prev.nil?
+            prev = line.chomp.to_i
+          else
+            @observed_data.push(line.chomp.to_i - prev)
+            prev = line.chomp.to_i
+          end
+        end
+      end
     end
   end
 
