@@ -243,7 +243,12 @@ if(SOURCE == 0)
   p max_log_likelihood()
 end
 
-File.open("log_likelihood/test.log", 'w')do |f|
+if(SOURCE == 0)
+  filename = "GMM"
+elsif(SOURCE == 1)
+  filename = ARGV[0].split("/").last
+end
+File.open("log_likelihood/#{filename}.log", 'w')do |f|
   @log_likelihood_history.each do |h|
     f.puts h
   end
