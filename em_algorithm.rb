@@ -234,7 +234,7 @@ STEP.times do |i|
   
   estep()
   mstep()
-  if((log_likelihood() - @log_likelihood_history.last).abs < 0.001)
+  if((log_likelihood() - @log_likelihood_history.last).abs < 0.01)
     break
   end
 end
