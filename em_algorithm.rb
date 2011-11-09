@@ -3,8 +3,8 @@ include Math
 
 DEBUG = 0
 STEP = 10000
-SOURCE = 1  ## 0=>GMM GEN, 1=>FILE
-MODE = 1 ## 0=>VALUE, 1=>DIFFERENTIAL
+SOURCE = 0  ## 0=>GMM GEN, 1=>FILE
+MODE = 0 ## 0=>VALUE, 1=>DIFFERENTIAL
 
 def sum_array(array)
   sum = 0
@@ -120,20 +120,20 @@ end
 if(SOURCE == 0) ## GMM GEN
   @gamma = [0.5, 0.5]
   @mu = [-1, -1]
-  @sigma2 = [100, 200]
+  @sigma2 = [1, 2]
 
   ## GMM GEN definition
-  @gamma_gen = [0.5,0.5]
-  @mu_gen = [50,60]
-  @sigma2_gen = [16,16]
-  n = [3000, 3000]
+  @gamma_gen = [0.3,0.7]
+  @mu_gen = [-5,5]
+  @sigma2_gen = [1,16]
+  n = [300, 700]
   K = @sigma2_gen.size
   n_sum = 0
   n.each do |v|
     n_sum = n_sum + v
   end
-
-
+  
+  
 elsif(SOURCE == 1) ## FILE
   if(MODE == 0) ## VALUE
     @gamma = [0.2,0.2,0.2,0.1,0.1,0.1,0.1]
@@ -196,19 +196,17 @@ N_NUM = @observed_data.size
 
 
 # histogram output
-histo = histo_gen(@observed_data)
-if(SOURCE == 0)
-  filename = "GMM_GEN"
-elsif(SOURCE == 1)
+
+if(SOURCE == 1)
+  histo = histo_gen(@observed_data)
   filename = ARGV[0].split("/").last
-end
-File.open("histogram/histo_#{filename}.log", 'w') do|f|
-  f.puts "# #{Time.now}"
-  histo.each do |v|
-    f.puts "#{v[0]} #{v[1]}"
+  File.open("histogram/histo_#{filename}.log", 'w') do|f|
+    f.puts "# #{Time.now}"
+    histo.each do |v|
+      f.puts "#{v[0]} #{v[1]}"
+    end
   end
 end
-
 
 
 if(DEBUG==1)
