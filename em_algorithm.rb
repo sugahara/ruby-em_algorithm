@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
+require './array.rb'
+
 include Math
 
 DEBUG = 0
 STEP = 10000
-SOURCE = 0  ## 0=>GMM GEN, 1=>FILE
+SOURCE = 1  ## 0=>GMM GEN, 1=>FILE
 MODE = 0 ## 0=>VALUE, 1=>DIFFERENTIAL
 
-def sum_array(array)
-  sum = 0
-  array.each do |v|
-    sum += v
-  end 
-  return sum
-end
+#LINE_MAX = (14*3600)/5 + (45*60)/5
+#LINE_MIN = (13*3600)/5 + (15*60)/5
 
 def gauss(x,mu,sigma2)
   sigma = sqrt(sigma2)
@@ -29,15 +26,27 @@ end
 
 def histo_gen(data)
   histo = []
-  min = data.min
-  max = data.max
-  min.upto(max) do |i|
-    histo.push [i,data.count(i)]
+  step = 1.0
+  min = data.min - 1.0
+  max = data.max + 1.0
+  n = min
+  while n < max do
+    cnt = 0
+    data.each do |i|
+      if i >= n && i < n + step
+        cnt += 1
+      end
+    end
+    histo.push [n, cnt]
+    n = n + step
   end
+  #min.to_i.upto(max) do |i|
+  #  histo.push [i,data.count(i)]
+  #end
   return histo
 end
 
-def estep() #正解
+def estep()
   K.times do |i|
     @weight[i].clear#後のK.timeの頭につけても良い
   end
@@ -61,7 +70,7 @@ end
 def mstep()
   weight_sum = []
   K.times do |i|
-    weight_sum[i] = sum_array(@weight[i])
+    weight_sum[i] = @weight[i].sum
   end
 
   K.times do |i|
@@ -136,13 +145,14 @@ if(SOURCE == 0) ## GMM GEN
   
 elsif(SOURCE == 1) ## FILE
   if(MODE == 0) ## VALUE
-    @gamma = [0.2,0.2,0.2,0.1,0.1,0.1,0.1]
-    @mu = [0, 10, 20, 30, 40, 50, 100]
-    @sigma2 = [500.0, 500.0, 500.0, 500.0, 500.0, 500.0, 500.0]
+    @gamma = [0.2,0.2,0.1,0.1, 0.1, 0.1, 0.1, 0.1]
+    @mu = [20.0, 10.0, 15.0, 25.0, 22.0, 21.0, 19.0, 18.0]
+    @sigma2 = [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0]
+
   elsif(MODE == 1) ## DIFFERENTIAL
-    @gamma = [0.2,0.2,0.2,0.1,0.1,0.1,0.1]
-    @mu = [-30,30,-10,10,0,-100,100]
-    @sigma2 = [500.0, 500.0, 500.0, 500.0, 500.0, 500.0, 500.0]
+    @gamma = [0.2,0.1,0.1,0.1,0.1,0.2,0.2]
+    @mu = [0,5,-5,10,-10,20,-20]
+    @sigma2 = [250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0]
   end
   K = @mu.size
 end
@@ -169,24 +179,31 @@ if(SOURCE == 0) #FROM GMM GEN
   end
   
 elsif(SOURCE == 1) ## FROM FILE
+  line_counter = 0
   File::open(ARGV[0])do|f|
     if(MODE == 0) ## VALUE
       f.each do |line|
-        if !line.index("/")
-          @observed_data.push(line.chomp.to_i)
-        end 
+        line_counter +=1
+        #if line_counter > LINE_MIN && line_counter <= LINE_MAX
+          if !line.index("/")
+            @observed_data.push(line.chomp.to_f)
+          end 
+        #end
       end
     elsif(MODE == 1) ## DIFFERENTIAL
       prev = nil
       f.each do |line|
-        if !line.index("/")
-          if prev.nil?
-            prev = line.chomp.to_i
-          else
-            @observed_data.push(line.chomp.to_i - prev)
-            prev = line.chomp.to_i
+        line_counter += 1
+        #if line_counter > LINE_MIN && line_counter <= LINE_MAX
+          if !line.index("/")
+            if prev.nil?
+              prev = line.chomp.to_i
+            else
+              @observed_data.push(line.chomp.to_f - prev)
+              prev = line.chomp.to_i
+            end
           end
-        end
+        #end
       end
     end
   end
@@ -194,19 +211,20 @@ elsif(SOURCE == 1) ## FROM FILE
 end
 N_NUM = @observed_data.size
 
+@mu = [@observed_data[0], @observed_data[1], @observed_data[2], @observed_data[3], @observed_data[4], @observed_data[5], @observed_data[6], @observed_data[7]]
 
 # histogram output
 
-if(SOURCE == 1)
-  histo = histo_gen(@observed_data)
-  filename = ARGV[0].split("/").last
-  File.open("histogram/histo_#{filename}.log", 'w') do|f|
-    f.puts "# #{Time.now}"
-    histo.each do |v|
-      f.puts "#{v[0]} #{v[1]}"
-    end
-  end
-end
+#if(SOURCE == 1)
+  #histo = histo_gen(@observed_data)
+  #filename = ARGV[0].split("/").last
+  #File.open("histogram/histo_#{filename}.log", 'w') do|f|
+    #f.puts "# #{Time.now}"
+    #histo.each do |v|
+      #f.puts "#{v[0]} #{v[1]}"
+    #end
+  #end
+#end
 
 
 if(DEBUG==1)
@@ -220,7 +238,7 @@ if(DEBUG==1)
   puts "# of data: #{N_NUM}"
 end
 
-
+p @observed_data
 STEP.times do |i|
   puts "#{i}step(s)"
   @log_likelihood_history.push(log_likelihood())
@@ -261,6 +279,15 @@ K.times do |k|
     print "#{round.call(@gamma[k],6)}*exp(-((x-#{round.call(@mu[k],6)})**2)/(2.0*sqrt(#{round.call(@sigma2[k],6)})*sqrt(#{round.call(@sigma2[k],6)})))/(sqrt(2.0*pi)*sqrt(#{round.call(@sigma2[k],6)})) + "
   elsif @mu[k] < 0
     print "#{round.call(@gamma[k],6)}*exp(-((x+#{round.call(@mu[k]*-1,6)})**2)/(2.0*sqrt(#{round.call(@sigma2[k],6)})*sqrt(#{round.call(@sigma2[k],6)})))/(sqrt(2.0*pi)*sqrt(#{round.call(@sigma2[k],6)})) + "
+  end
+end
+print "\n\n"
+K.times do |k|
+  #print "#{@gamma[k]}*gauss(v, #{@mu[k]}, sqrt(#{@sigma2[k]})) + "
+  if @mu[k] >= 0
+    print "#{round.call(@gamma[k],6)}*exp(-((x-#{round.call(@mu[k],6)})**2)/(2.0*sqrt(#{round.call(@sigma2[k],6)})*sqrt(#{round.call(@sigma2[k],6)})))/(sqrt(2.0*pi)*sqrt(#{round.call(@sigma2[k],6)})) w l axis x1y2 lw 3 title '#{round.call(@gamma[k],6)}*N(#{round.call(@mu[k],6)},#{round.call(@sigma2[k],6)})' , "
+  elsif @mu[k] < 0
+    print "#{round.call(@gamma[k],6)}*exp(-((x+#{round.call(@mu[k]*-1,6)})**2)/(2.0*sqrt(#{round.call(@sigma2[k],6)})*sqrt(#{round.call(@sigma2[k],6)})))/(sqrt(2.0*pi)*sqrt(#{round.call(@sigma2[k],6)})) w l axis x1y2 lw 3 title '#{round.call(@gamma[k],6)}*N(#{round.call(@mu[k],6)},#{round.call(@sigma2[k],6)})' , "
   end
 end
 print "\n"
