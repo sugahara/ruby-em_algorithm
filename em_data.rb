@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 class EMData
   require './em_algorithm.rb'
-  attr_accessor :data_array
+  attr_accessor :data_array, :initial_value, :result, :mix
   require './array.rb'
   def initialize(data_array, initial_value = {}, mix = 7)
     @data_array = data_array
@@ -36,12 +36,11 @@ class EMData
         arr << 100.0
       end
     end
-
   end
 
   def run
     em = EMAlgorithm.new(@data_array, @initial_value)
-    em.run()
+    @result = em.run()
   end
 
 end

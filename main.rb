@@ -11,4 +11,5 @@ class Main
   }
   em_data = EMData.new(data_array,initial_value)
   em_data.run
+  IO::result_to_gnuplot(em_data)
 end
