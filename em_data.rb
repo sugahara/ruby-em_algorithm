@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class EMData
-  require './em_algorithm2.rb'
+  require './em_algorithm.rb'
   attr_accessor :data_array
   require './array.rb'
   def initialize(data_array, initial_value = {}, mix = 7)
