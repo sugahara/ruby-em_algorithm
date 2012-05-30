@@ -12,14 +12,14 @@ class EMData
       @mix = @initial_value[:mu].size      
     end
 
-    ### get random value from data_array for default initial mean value
+    ### get random value from data_array for initial mean value
     if @initial_value[:mu].nil?
       @initial_value[:mu] = (0...@mix).inject([]) do |arr, i|
         arr << @data_array[rand(@data_array.size)]
       end
     end
     
-    ### make default gamma value(uniform)
+    ### make gamma value
     if @initial_value[:gamma].nil?
       @initial_value[:gamma] = (0...@mix).inject([]) do |arr,i|
         if i < @mix-1

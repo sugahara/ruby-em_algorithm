@@ -3,12 +3,12 @@ class EMAlgorithm
   require './array.rb'
   include Math
   LOOP = 10000
-  def initialize(data_array, initial_value)
-    @initial_value = initial_value
-    @mu = initial_value[:mu]
-    @sigma2 = initial_value[:sigma2]
-    @gamma = initial_value[:gamma]
-    @data_array = data_array
+  def initialize(em_data)
+    @initial_value = em_data.initial_value
+    @mu = @initial_value[:mu]
+    @sigma2 = @initial_value[:sigma2]
+    @gamma = @initial_value[:gamma]
+    @data_array = em_data.data_array
     @mix = @mu.size
     @weight = Array.new(@mix).map! {Array.new()}
   end
@@ -25,7 +25,6 @@ class EMAlgorithm
     end
     temp_new_data = Array.new(@data_array.size, 0)
     @data_array.each_with_index do |val, idx|
-      #b[idx] = 0要らない
       @mix.times do |t|
         temp_new_data[idx] += @gamma[t] * gauss_pdf(val, @mu[t], @sigma2[t])
       end
@@ -46,11 +45,6 @@ class EMAlgorithm
     end
     
     @mix.times do |t|
-      # sum = 0
-      # @data_array.each_with_index do |val,idx|
-      #   sum += @weight[t][idx]
-      # end
-      # 下のinjectに切り替え
       sum = (0...@data_array.size).inject(0) do |sum, i|
         sum += @weight[t][i] * @data_array[i]
       end

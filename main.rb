@@ -10,6 +10,7 @@ class Main
     :sigma2 =>[10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0]
   }
   em_data = EMData.new(data_array,initial_value)
-  em_data.run
-  IO::result_to_gnuplot(em_data)
+  em = EMAlgorithm.new(em_data)
+  result = em.run
+  IO::result_to_gnuplot(result, em_data.mix)
 end
