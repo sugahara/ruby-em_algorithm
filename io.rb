@@ -1,9 +1,27 @@
+# -*- coding: undecided -*-
 class IO
+  #ファイルから値を読み込みArrayに挿入
   def self.to_array(path)
     value = Array.new
     File.open(path,'r') do |f|
       f.each do |line|
         value << line.to_f
+      end
+    end
+    value
+  end
+
+  #ファイルから値を読み込みその前後差をArrayに挿入
+  def self.to_array_diff(path)
+    value = Array.new
+    value_temp = to_array(path)
+    prev = nil
+    value = []
+    value_temp.each do |val|
+      if prev == nil
+        prev = val
+      else
+        value << val - prev
       end
     end
     value
