@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class EMAlgorithm
-  require './array.rb'
+  require File.expand_path("../array.rb",__FILE__)
   include Math
   LOOP = 10000
   def initialize(em_data)
