@@ -9,6 +9,11 @@ class Main
     :mu =>[20.0, 100.0, 150.0, 250.0, 220.0, 210.0, 190.0, 180.0],
     :sigma2 =>[100000.0, 100000.0, 100000.0, 100000.0, 100000.0, 100000.0, 100000.0, 100000.0]
   }
+  initial_value = {
+    :gamma => [0.5,0.5],
+    :mu => [0.0,10.0],
+    :sigma2 => [9.0,9.0]
+  }
   em_data = EMData.new(data_array, initial_value)
   p em_data.initial_value
   em = EMAlgorithm.new(em_data)
