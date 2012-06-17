@@ -10,10 +10,10 @@ arr = IO::to_array(file_path)
 v = GSL::Vector[arr]
 if range_from != 0 && range_to != 0
   h = v.histogram(bin,[range_from, range_to])
-  h.fprintf(IO.try_convert(STDOUT), range_format = "%e", bin_format = "%e")
+  h.fprintf($stdout, range_format = "%e", bin_format = "%e")
 else
   h = v.histogram(bin)
-  h.fprintf(IO.try_convert(STDOUT), range_format = "%e", bin_format = "%e")
+  h.fprintf($stdout, range_format = "%e", bin_format = "%e")
 end
 h.graph("-T X -C -g 3")
 #p IO::to_array(file_path)
