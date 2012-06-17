@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 class EMData
-  require './em_algorithm.rb'
+  require File.expand_path("../array.rb",__FILE__)
+  require File.expand_path("../em_algorithm.rb",__FILE__)
   attr_accessor :data_array, :initial_value, :result, :mix
-  require './array.rb'
+
   def initialize(data_array, initial_value = {}, mix = 7)
     @data_array = data_array
     @initial_value = initial_value

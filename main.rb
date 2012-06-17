@@ -1,7 +1,6 @@
 class Main
-  require './io.rb'
-  require './em_data.rb'
-
+  require File.expand_path("../em_data.rb",__FILE__)
+  require File.expand_path("../io.rb",__FILE__)
   data_path = ARGV[0]
   data_array = IO::to_array(data_path)
   initial_value = {
