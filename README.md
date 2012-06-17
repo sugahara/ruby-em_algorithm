@@ -19,10 +19,12 @@ EMアルゴリズムのステップごとに現在の尤度と各ガウス分布
 ### ボックス＝ミュラー法による生成
 gaussディレクトリにボックス＝ミュラー法により生成された二混合ガウス分布データgmm.txtが存在する．（混合比[0,7, 0.3], 平均値[5.0, -5.0], 分散値[16.0, 1.0]）
 実行方法
+
     % ruby main.rb gauss/gmm.txt
 
+以下によりさらに異なるサンプルも作成可能．
+
     % ruby gauss/boxmuller.rb > gmm.txt
-によって更に異なるサンプルを生成することもできる．
 
 ### Ruby/GSLによる生成
     % ruby gauss/gmm_gsl.rb
@@ -37,23 +39,29 @@ EMアルゴリズムの推定結果は初期値に大きく依存するため，
 
 ###初期値のマニュアル設定
 初期値のマニュアル設定は以下に示す方法によって行う．
+
     % main.rb
-    % em_data = EMData.new(data_array, initial_value)
+    % em\_data = EMData.new(data\_array, initial\_value)
+	
 の直前に以下のようなHashを作成する．
-initial_value = {
-  :gamma => [0.5,0.5], # 混合比
-  :mu => [0.0,10.0],   # 平均値
-  :sigma2 => [9.0,9.0] # 分散値
-}
+
+    initial_value = {
+      :gamma => [0.5,0.5], # 混合比
+      :mu => [0.0,10.0],   # 平均値
+      :sigma2 => [9.0,9.0] # 分散値
+    }
 
 混合比は値の総和が1.0となるよう設定しなければならない．
 混合数は:muの配列サイズから自動的に取得される．
 
 ##実際の度数分布の確認
 入力データの実際の度数分布を確認するために以下のようにしてヒストグラム描画データを出力することができる．
-    % ruby histogram.rb <input_file> <bin_size> [from] [to] > <output_file>
+
+    % ruby histogram.rb <input\_file> <binsize> [from] [to] > <output\_file>
+
 [from], [to]にはヒストグラムの描画範囲を指定することができる．
 
 これにより出力されたデータをgnuplotで以下のように読みこめば良い．
+
     % gnuplot
-    % >plot <output_file> using 1:3 w boxes;
+    % >plot <output\_file> using 1:3 w boxes;
