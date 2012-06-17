@@ -27,7 +27,9 @@ gaussディレクトリにボックス＝ミュラー法により生成された
     % ruby gauss/boxmuller.rb > gmm.txt
 
 ### Ruby/GSLによる生成
+
     % ruby gauss/gmm_gsl.rb
+
 こちらでも生成可能
 
 ## EMアルゴリズムの各種パラメータ設定方法
@@ -41,7 +43,7 @@ EMアルゴリズムの推定結果は初期値に大きく依存するため，
 初期値のマニュアル設定は以下に示す方法によって行う．
 
     % main.rb
-    % em\_data = EMData.new(data\_array, initial\_value)
+    % em_data = EMData.new(data_array, initial_value)
 	
 の直前に以下のようなHashを作成する．
 
@@ -57,11 +59,11 @@ EMアルゴリズムの推定結果は初期値に大きく依存するため，
 ##実際の度数分布の確認
 入力データの実際の度数分布を確認するために以下のようにしてヒストグラム描画データを出力することができる．
 
-    % ruby histogram.rb <input\_file> <binsize> [from] [to] > <output\_file>
+    % ruby histogram.rb <input_file> <binsize> [from] [to] > <output_file>
 
 [from], [to]にはヒストグラムの描画範囲を指定することができる．
 
 これにより出力されたデータをgnuplotで以下のように読みこめば良い．
 
     % gnuplot
-    % >plot <output\_file> using 1:3 w boxes;
+    % >plot <output_file> using 1:3 w boxes;
