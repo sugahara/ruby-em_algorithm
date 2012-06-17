@@ -59,7 +59,7 @@ EMアルゴリズムの推定結果は初期値に大きく依存するため，
 ##実際の度数分布の確認
 入力データの実際の度数分布を確認するために以下のようにしてヒストグラム描画データを出力することができる．
 
-    % ruby histogram.rb <input_file> <binsize> [from] [to] > <output_file>
+    % ruby histogram.rb <input_file> <binsize> [<from> <to>] > <output_file>
 
 [from], [to]にはヒストグラムの描画範囲を指定することができる．
 
