@@ -61,7 +61,7 @@ EMアルゴリズムの推定結果は初期値に大きく依存するため，
 
     % ruby histogram.rb <input_file> <binsize> [<from> <to>] > <output_file>
 
-[from], [to]にはヒストグラムの描画範囲を指定することができる．
+<from>, <to>にはヒストグラムの描画範囲を指定することができる．
 
 これにより出力されたデータをgnuplotで以下のように読みこめば良い．
 
